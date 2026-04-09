@@ -1,66 +1,58 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String message) {
+        super(message);
+    }
+}
 
-class Bogie {
-    private String id;
+class PassengerBogie {
+    private String bogieId;
     private int capacity;
 
-    public Bogie(String id, int capacity) {
-        this.id = id;
+    public PassengerBogie(String bogieId, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than zero. Received: " + capacity);
+        }
+        this.bogieId = bogieId;
         this.capacity = capacity;
     }
 
-    public int getCapacity() {
-        return capacity;
+    @Override
+    public String toString() {
+        return "PassengerBogie [ID=" + bogieId + ", Capacity=" + capacity + "]";
     }
 }
 
 public class TrainApp {
-
     public static void main(String[] args) {
-        // 1. Prepare a collection of bogies (Large dataset for meaningful benchmark)
-        List<Bogie> trainConsist = new ArrayList<>();
-        for (int i = 0; i < 100000; i++) {
-            trainConsist.add(new Bogie("B" + i, (int) (Math.random() * 100)));
+        System.out.println("=== Train Consist Management System (UC14) ===\n");
+
+        try {
+            System.out.println("Scenario 1: Creating a Sleeper Bogie with 72 seats...");
+            PassengerBogie b1 = new PassengerBogie("S1", 72);
+            System.out.println("Result: " + b1 + " successfully added.\n");
+        } catch (InvalidCapacityException e) {
+            System.out.println("Result: Error occurred - " + e.getMessage() + "\n");
         }
 
-        System.out.println("--- UC13: Performance Comparison (Loops vs Streams) ---");
-        System.out.println("Dataset Size: " + trainConsist.size() + " bogies\n");
-
-        // 2. Loop-Based Filtering
-        long startLoop = System.nanoTime();
-        List<Bogie> loopFiltered = new ArrayList<>();
-        for (Bogie b : trainConsist) {
-            if (b.getCapacity() > 60) {
-                loopFiltered.add(b);
-            }
+        try {
+            System.out.println("Scenario 2: Creating a Bogie with 0 seats...");
+            PassengerBogie b2 = new PassengerBogie("Z0", 0);
+            System.out.println("Result: " + b2);
+        } catch (InvalidCapacityException e) {
+            System.err.println("Result: EXCEPTION CAUGHT -> " + e.getMessage() + "\n");
         }
-        long endLoop = System.nanoTime();
-        long loopDuration = endLoop - startLoop;
 
-        System.out.println("Loop-Based Filtering:");
-        System.out.println("Filtered Count: " + loopFiltered.size());
-        System.out.println("Execution Time: " + loopDuration + " ns");
-
-        // 3. Stream-Based Filtering
-        long startStream = System.nanoTime();
-        List<Bogie> streamFiltered = trainConsist.stream()
-                .filter(b -> b.getCapacity() > 60)
-                .collect(Collectors.toList());
-        long endStream = System.nanoTime();
-        long streamDuration = endStream - startStream;
-
-        System.out.println("\nStream-Based Filtering:");
-        System.out.println("Filtered Count: " + streamFiltered.size());
-        System.out.println("Execution Time: " + streamDuration + " ns");
-
-        // 4. Comparison Summary
-        System.out.println("\n--- Performance Summary ---");
-        if (loopDuration < streamDuration) {
-            System.out.println("Loop was faster by " + (streamDuration - loopDuration) + " ns");
-        } else {
-            System.out.println("Stream was faster by " + (loopDuration - streamDuration) + " ns");
+        try {
+            Thread.sleep(50);
+            System.out.println("Scenario 3: Creating a Bogie with -10 seats...");
+            PassengerBogie b3 = new PassengerBogie("N10", -10);
+            System.out.println("Result: " + b3);
+        } catch (InvalidCapacityException e) {
+            System.err.println("Result: EXCEPTION CAUGHT -> " + e.getMessage());
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
         }
+
+        System.out.println("\nProgram execution continues safely...");
     }
 }
