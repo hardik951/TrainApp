@@ -1,58 +1,50 @@
-class InvalidCapacityException extends Exception {
-    public InvalidCapacityException(String message) {
+class CargoSafetyException extends RuntimeException {
+    public CargoSafetyException(String message) {
         super(message);
     }
 }
 
-class PassengerBogie {
+class GoodsBogie {
     private String bogieId;
-    private int capacity;
+    private String shape;
+    private String currentCargo = "Empty";
 
-    public PassengerBogie(String bogieId, int capacity) throws InvalidCapacityException {
-        if (capacity <= 0) {
-            throw new InvalidCapacityException("Capacity must be greater than zero. Received: " + capacity);
-        }
+    public GoodsBogie(String bogieId, String shape) {
         this.bogieId = bogieId;
-        this.capacity = capacity;
+        this.shape = shape;
     }
 
-    @Override
-    public String toString() {
-        return "PassengerBogie [ID=" + bogieId + ", Capacity=" + capacity + "]";
+    public void assignCargo(String cargo) {
+        System.out.println("Processing: " + cargo + " for " + shape + " bogie " + bogieId);
+
+        if (cargo.equalsIgnoreCase("Petroleum") && shape.equalsIgnoreCase("Rectangular")) {
+            throw new CargoSafetyException("Safety Violation: Petroleum in Rectangular bogie");
+        }
+
+        this.currentCargo = cargo;
+        System.out.println("Status: Success");
+    }
+
+    public String getCurrentCargo() {
+        return currentCargo;
     }
 }
 
 public class TrainApp {
     public static void main(String[] args) {
-        System.out.println("=== Train Consist Management System (UC14) ===\n");
+        GoodsBogie myBogie = new GoodsBogie("GB-101", "Rectangular");
+        String[] cargoList = {"Grain", "Petroleum"};
 
-        try {
-            System.out.println("Scenario 1: Creating a Sleeper Bogie with 72 seats...");
-            PassengerBogie b1 = new PassengerBogie("S1", 72);
-            System.out.println("Result: " + b1 + " successfully added.\n");
-        } catch (InvalidCapacityException e) {
-            System.out.println("Result: Error occurred - " + e.getMessage() + "\n");
+        for (String cargo : cargoList) {
+            try {
+                myBogie.assignCargo(cargo);
+            } catch (CargoSafetyException e) {
+                System.out.println("Caught: " + e.getMessage());
+            } finally {
+                System.out.println("Clean-up: Safety check cycle finished for " + cargo);
+            }
         }
 
-        try {
-            System.out.println("Scenario 2: Creating a Bogie with 0 seats...");
-            PassengerBogie b2 = new PassengerBogie("Z0", 0);
-            System.out.println("Result: " + b2);
-        } catch (InvalidCapacityException e) {
-            System.err.println("Result: EXCEPTION CAUGHT -> " + e.getMessage() + "\n");
-        }
-
-        try {
-            Thread.sleep(50);
-            System.out.println("Scenario 3: Creating a Bogie with -10 seats...");
-            PassengerBogie b3 = new PassengerBogie("N10", -10);
-            System.out.println("Result: " + b3);
-        } catch (InvalidCapacityException e) {
-            System.err.println("Result: EXCEPTION CAUGHT -> " + e.getMessage());
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        }
-
-        System.out.println("\nProgram execution continues safely...");
+        System.out.println("Final Bogie State: " + myBogie.getCurrentCargo());
     }
 }
