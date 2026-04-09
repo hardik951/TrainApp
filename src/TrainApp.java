@@ -1,22 +1,17 @@
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrainApp {
     public static void main(String[] args) {
 
-        // Create LinkedHashSet for train formation
-        LinkedHashSet<String> train = new LinkedHashSet<>();
+        // Welcome message
+        System.out.println("=== Train Consist Management App ===");
 
-        // Add bogies
-        train.add("Engine");
-        train.add("Sleeper");
-        train.add("Cargo");
-        train.add("Guard");
+        // Initialize empty train consist using ArrayList
+        List<String> train = new ArrayList<>();
 
-        // Attempt to add duplicate bogie
-        train.add("Sleeper"); // duplicate
-
-        // Display final train formation
-        System.out.println("Final Train Formation:");
-        System.out.println(train);
+        // Display initial bogie count
+        System.out.println("Train consist initialized.");
+        System.out.println("Initial number of bogies: " + train.size());
     }
 }
