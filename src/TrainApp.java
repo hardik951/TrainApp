@@ -1,55 +1,66 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-class GoodsBogie {
-    private String type;
-    private String cargo;
+class Bogie {
+    private String id;
+    private int capacity;
 
-    public GoodsBogie(String type, String cargo) {
-        this.type = type;
-        this.cargo = cargo;
+    public Bogie(String id, int capacity) {
+        this.id = id;
+        this.capacity = capacity;
     }
 
-    public String getType() { return type; }
-    public String getCargo() { return cargo; }
-
-    @Override
-    public String toString() {
-        return String.format("[%s : %s]", type, cargo);
+    public int getCapacity() {
+        return capacity;
     }
 }
 
 public class TrainApp {
+
     public static void main(String[] args) {
-        // 1. Prepare a list of goods bogies (Simulating User Input)
-        List<GoodsBogie> goodsConsist = new ArrayList<>();
-        goodsConsist.add(new GoodsBogie("Rectangular", "Coal"));
-        goodsConsist.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsConsist.add(new GoodsBogie("Open", "Iron Ore"));
+        // 1. Prepare a collection of bogies (Large dataset for meaningful benchmark)
+        List<Bogie> trainConsist = new ArrayList<>();
+        for (int i = 0; i < 100000; i++) {
+            trainConsist.add(new Bogie("B" + i, (int) (Math.random() * 100)));
+        }
 
-        // Try changing "Petroleum" to "Water" to see the safety check fail!
-        goodsConsist.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        System.out.println("--- UC13: Performance Comparison (Loops vs Streams) ---");
+        System.out.println("Dataset Size: " + trainConsist.size() + " bogies\n");
 
-        System.out.println("--- Current Train Consist ---");
-        goodsConsist.forEach(System.out::println);
-
-        // 2. Stream API for Safety Compliance Check
-        // allMatch returns true only if EVERY bogie satisfies the predicate
-        boolean isSafetyCompliant = goodsConsist.stream().allMatch(bogie -> {
-            if ("Cylindrical".equalsIgnoreCase(bogie.getType())) {
-                return "Petroleum".equalsIgnoreCase(bogie.getCargo());
+        // 2. Loop-Based Filtering
+        long startLoop = System.nanoTime();
+        List<Bogie> loopFiltered = new ArrayList<>();
+        for (Bogie b : trainConsist) {
+            if (b.getCapacity() > 60) {
+                loopFiltered.add(b);
             }
-            return true; // Non-cylindrical bogies are inherently safe in this UC
-        });
+        }
+        long endLoop = System.nanoTime();
+        long loopDuration = endLoop - startLoop;
 
-        // 3. Display the result
-        System.out.println("\n--- Safety Validation Report ---");
-        if (isSafetyCompliant) {
-            System.out.println("STATUS: ✅ SAFE");
-            System.out.println("MESSAGE: All bogies comply with hazardous material protocols.");
+        System.out.println("Loop-Based Filtering:");
+        System.out.println("Filtered Count: " + loopFiltered.size());
+        System.out.println("Execution Time: " + loopDuration + " ns");
+
+        // 3. Stream-Based Filtering
+        long startStream = System.nanoTime();
+        List<Bogie> streamFiltered = trainConsist.stream()
+                .filter(b -> b.getCapacity() > 60)
+                .collect(Collectors.toList());
+        long endStream = System.nanoTime();
+        long streamDuration = endStream - startStream;
+
+        System.out.println("\nStream-Based Filtering:");
+        System.out.println("Filtered Count: " + streamFiltered.size());
+        System.out.println("Execution Time: " + streamDuration + " ns");
+
+        // 4. Comparison Summary
+        System.out.println("\n--- Performance Summary ---");
+        if (loopDuration < streamDuration) {
+            System.out.println("Loop was faster by " + (streamDuration - loopDuration) + " ns");
         } else {
-            System.out.println("STATUS: ❌ UNSAFE");
-            System.out.println("CRITICAL: Safety violation detected! Cylindrical bogies found with non-petroleum cargo.");
+            System.out.println("Stream was faster by " + (loopDuration - streamDuration) + " ns");
         }
     }
 }
