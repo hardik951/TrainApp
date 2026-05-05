@@ -1,49 +1,27 @@
-import java.util.Scanner;
+import java.util.Arrays;
 
 public class TrainConsistManagementApp {
 
-    public static void bubbleSort(int[] capacities) {
-        int n = capacities.length;
-
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - 1 - i; j++) {
-                if (capacities[j] > capacities[j + 1]) {
-                    int temp = capacities[j];
-                    capacities[j] = capacities[j + 1];
-                    capacities[j + 1] = temp;
-                }
-            }
-        }
-    }
-
-    public static void display(int[] capacities) {
-        for (int cap : capacities) {
-            System.out.print(cap + " ");
-        }
-        System.out.println();
+    public static String[] sortBogieNames(String[] bogieNames) {
+        Arrays.sort(bogieNames);
+        return bogieNames;
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter number of passenger bogies: ");
-        int n = scanner.nextInt();
+        String[] input1 = {"Sleeper","AC Chair","First Class","General","Luxury"};
+        System.out.println(Arrays.toString(sortBogieNames(input1)));
 
-        int[] capacities = new int[n];
+        String[] input2 = {"Luxury","General","Sleeper","AC Chair"};
+        System.out.println(Arrays.toString(sortBogieNames(input2)));
 
-        System.out.println("Enter capacities of passenger bogies:");
-        for (int i = 0; i < n; i++) {
-            capacities[i] = scanner.nextInt();
-        }
+        String[] input3 = {"AC Chair","First Class","General"};
+        System.out.println(Arrays.toString(sortBogieNames(input3)));
 
-        System.out.print("Before Sorting: ");
-        display(capacities);
+        String[] input4 = {"Sleeper","AC Chair","Sleeper","General"};
+        System.out.println(Arrays.toString(sortBogieNames(input4)));
 
-        bubbleSort(capacities);
-
-        System.out.print("After Sorting (Ascending): ");
-        display(capacities);
-
-        scanner.close();
+        String[] input5 = {"Sleeper"};
+        System.out.println(Arrays.toString(sortBogieNames(input5)));
     }
 }
