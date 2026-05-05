@@ -1,6 +1,10 @@
 public class TrainConsistManagementApp {
 
     public static boolean searchBogie(String[] bogieIds, String key) {
+        if (bogieIds == null || bogieIds.length == 0) {
+            throw new IllegalStateException("No bogies available in the train to search.");
+        }
+
         for (int i = 0; i < bogieIds.length; i++) {
             if (bogieIds[i].equals(key)) {
                 return true;
@@ -14,16 +18,7 @@ public class TrainConsistManagementApp {
         String[] bogies1 = {"BG101","BG205","BG309","BG412","BG550"};
         System.out.println(searchBogie(bogies1, "BG309"));
 
-        String[] bogies2 = {"BG101","BG205","BG309","BG412","BG550"};
-        System.out.println(searchBogie(bogies2, "BG999"));
-
-        String[] bogies3 = {"BG101","BG205","BG309","BG412","BG550"};
-        System.out.println(searchBogie(bogies3, "BG101"));
-
-        String[] bogies4 = {"BG101","BG205","BG309","BG412","BG550"};
-        System.out.println(searchBogie(bogies4, "BG550"));
-
-        String[] bogies5 = {"BG101"};
-        System.out.println(searchBogie(bogies5, "BG101"));
+        String[] bogies2 = {};
+        System.out.println(searchBogie(bogies2, "BG101"));
     }
 }
