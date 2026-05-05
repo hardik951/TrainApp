@@ -1,50 +1,49 @@
-class CargoSafetyException extends RuntimeException {
-    public CargoSafetyException(String message) {
-        super(message);
-    }
-}
+import java.util.Scanner;
 
-class GoodsBogie {
-    private String bogieId;
-    private String shape;
-    private String currentCargo = "Empty";
+public class TrainConsistManagementApp {
 
-    public GoodsBogie(String bogieId, String shape) {
-        this.bogieId = bogieId;
-        this.shape = shape;
-    }
+    public static void bubbleSort(int[] capacities) {
+        int n = capacities.length;
 
-    public void assignCargo(String cargo) {
-        System.out.println("Processing: " + cargo + " for " + shape + " bogie " + bogieId);
-
-        if (cargo.equalsIgnoreCase("Petroleum") && shape.equalsIgnoreCase("Rectangular")) {
-            throw new CargoSafetyException("Safety Violation: Petroleum in Rectangular bogie");
-        }
-
-        this.currentCargo = cargo;
-        System.out.println("Status: Success");
-    }
-
-    public String getCurrentCargo() {
-        return currentCargo;
-    }
-}
-
-public class TrainApp {
-    public static void main(String[] args) {
-        GoodsBogie myBogie = new GoodsBogie("GB-101", "Rectangular");
-        String[] cargoList = {"Grain", "Petroleum"};
-
-        for (String cargo : cargoList) {
-            try {
-                myBogie.assignCargo(cargo);
-            } catch (CargoSafetyException e) {
-                System.out.println("Caught: " + e.getMessage());
-            } finally {
-                System.out.println("Clean-up: Safety check cycle finished for " + cargo);
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - 1 - i; j++) {
+                if (capacities[j] > capacities[j + 1]) {
+                    int temp = capacities[j];
+                    capacities[j] = capacities[j + 1];
+                    capacities[j + 1] = temp;
+                }
             }
         }
+    }
 
-        System.out.println("Final Bogie State: " + myBogie.getCurrentCargo());
+    public static void display(int[] capacities) {
+        for (int cap : capacities) {
+            System.out.print(cap + " ");
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter number of passenger bogies: ");
+        int n = scanner.nextInt();
+
+        int[] capacities = new int[n];
+
+        System.out.println("Enter capacities of passenger bogies:");
+        for (int i = 0; i < n; i++) {
+            capacities[i] = scanner.nextInt();
+        }
+
+        System.out.print("Before Sorting: ");
+        display(capacities);
+
+        bubbleSort(capacities);
+
+        System.out.print("After Sorting (Ascending): ");
+        display(capacities);
+
+        scanner.close();
     }
 }
