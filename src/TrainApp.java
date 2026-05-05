@@ -1,27 +1,29 @@
-import java.util.Arrays;
-
 public class TrainConsistManagementApp {
 
-    public static String[] sortBogieNames(String[] bogieNames) {
-        Arrays.sort(bogieNames);
-        return bogieNames;
+    public static boolean searchBogie(String[] bogieIds, String key) {
+        for (int i = 0; i < bogieIds.length; i++) {
+            if (bogieIds[i].equals(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
 
-        String[] input1 = {"Sleeper","AC Chair","First Class","General","Luxury"};
-        System.out.println(Arrays.toString(sortBogieNames(input1)));
+        String[] bogies1 = {"BG101","BG205","BG309","BG412","BG550"};
+        System.out.println(searchBogie(bogies1, "BG309"));
 
-        String[] input2 = {"Luxury","General","Sleeper","AC Chair"};
-        System.out.println(Arrays.toString(sortBogieNames(input2)));
+        String[] bogies2 = {"BG101","BG205","BG309","BG412","BG550"};
+        System.out.println(searchBogie(bogies2, "BG999"));
 
-        String[] input3 = {"AC Chair","First Class","General"};
-        System.out.println(Arrays.toString(sortBogieNames(input3)));
+        String[] bogies3 = {"BG101","BG205","BG309","BG412","BG550"};
+        System.out.println(searchBogie(bogies3, "BG101"));
 
-        String[] input4 = {"Sleeper","AC Chair","Sleeper","General"};
-        System.out.println(Arrays.toString(sortBogieNames(input4)));
+        String[] bogies4 = {"BG101","BG205","BG309","BG412","BG550"};
+        System.out.println(searchBogie(bogies4, "BG550"));
 
-        String[] input5 = {"Sleeper"};
-        System.out.println(Arrays.toString(sortBogieNames(input5)));
+        String[] bogies5 = {"BG101"};
+        System.out.println(searchBogie(bogies5, "BG101"));
     }
 }
